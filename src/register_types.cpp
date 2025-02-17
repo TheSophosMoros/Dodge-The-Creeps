@@ -1,20 +1,22 @@
 #include "register_types.hpp"
+
+#include "Player.hpp"
+
 #include <gdextension_interface.h>
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/core/defs.hpp>
-#include <godot_cpp/godot.hpp>
 
 using namespace godot;
 
-void initialize_gdextension_types(ModuleInitializationLevel p_level)
+void initialize_gdextension_types(const ModuleInitializationLevel p_level)
 {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
 	}
-	//GDREGISTER_CLASS(YourClass);
+	GDREGISTER_CLASS(Player);
 }
 
-void uninitialize_gdextension_types(ModuleInitializationLevel p_level) {
+void uninitialize_gdextension_types(const ModuleInitializationLevel p_level) {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
 	}
