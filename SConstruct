@@ -5,8 +5,8 @@ import sys
 from methods import print_error
 
 
-libname = "GodotBeginnings"
-projectdir = "DodgeCreeps"
+libname = "EXTENSION-NAME"
+projectdir = "demo"
 
 localEnv = Environment(tools=["default"], PLATFORM="")
 
