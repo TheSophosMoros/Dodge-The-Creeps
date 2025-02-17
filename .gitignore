@@ -1,7 +1,7 @@
 # Godot auto generated files
 *.gen.*
 .godot/
-gitAdmin
+
 # Ignore library files but not the gdextension file
 demo/bin/*
 !demo/bin/android
@@ -48,6 +48,7 @@ compile_commands.json
 
 # Other stuff
 *.log
+gitAdmin
 
 # VSCode
 .vscode/*
