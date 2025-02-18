@@ -29,7 +29,7 @@ public:
 	void _process(float delta);
 	void _ready() override;
 
-	void bodyEntered(Node *body);
+	void bodyCollision(Node *body);
 	void start(Vector2 position);
 };
 

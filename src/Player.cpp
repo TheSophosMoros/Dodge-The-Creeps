@@ -13,12 +13,12 @@ using namespace godot;
 
 void Player::_bind_methods()
 {
-	ClassDB::bind_method(D_METHOD("_ready"), &Player::_ready);
-	ClassDB::bind_method(D_METHOD("bodyEntered"), &Player::bodyEntered);
-	ClassDB::bind_method(D_METHOD("setSpeed", "p_speed"), &Player::setSpeed);
-	ClassDB::bind_method(D_METHOD("getSpeed"), &Player::getSpeed);
+	ClassDB::bind_method(D_METHOD("body_collision"), &Player::bodyCollision);
+	ClassDB::bind_method(D_METHOD("set_speed", "p_speed"), &Player::setSpeed);
+	ClassDB::bind_method(D_METHOD("get_speed"), &Player::getSpeed);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "speed"),"setSpeed", "getSpeed");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "speed"), "set_speed", "get_speed");
+	ClassDB::add_signal("hit", {});
 }
 
 void Player::_register_methods()
@@ -43,18 +43,18 @@ Player::~Player() = default;
 
 void Player::_process(const float delta)
 {
-	if (Engine::get_singleton()->is_editor_hint()) return; //Work Around for editing that stops the error of InputMap action "" doesn't exist
-	const Input *input = Input::get_singleton();
+	if (Engine::get_singleton()->is_editor_hint()) return; //Work Around for editing that stops the error of 'InputMap action "" doesn't exist'
+	const auto inputPtr = Input::get_singleton();
 	auto velocity = Vector2();
 
-	if (input->is_action_pressed("move_left")) velocity.x -= 1;
-	if (input->is_action_pressed("move_right")) velocity.x += 1;
-	if (input->is_action_pressed("move_up")) velocity.y -= 1;
-	if (input->is_action_pressed("move_down")) velocity.y += 1;
+	if (inputPtr->is_action_pressed("move_left")) velocity.x -= 1;
+	if (inputPtr->is_action_pressed("move_right")) velocity.x += 1;
+	if (inputPtr->is_action_pressed("move_up")) velocity.y -= 1;
+	if (inputPtr->is_action_pressed("move_down")) velocity.y += 1;
 
-	auto* sprite = this->get_node<AnimatedSprite2D>("AnimatedSprite2D");
+	const auto sprite2dPtr = this->get_node<AnimatedSprite2D>("AnimatedSprite2D");
 	velocity = velocity.normalized() * static_cast<float>(speed);
-	velocity.length() > 0 ?	sprite->play() : sprite->stop();
+	velocity.length() > 0 ?	sprite2dPtr->play() : sprite2dPtr->stop();
 
 	auto position = get_position();
 	position += velocity * delta;
@@ -64,14 +64,14 @@ void Player::_process(const float delta)
 
 	if (velocity.x != 0.f)
 	{
-		sprite->set_animation("walk");
-		sprite->set_flip_v(false);
-		sprite->set_flip_h(velocity.x < 0.f);
+		sprite2dPtr->set_animation("walk");
+		sprite2dPtr->set_flip_v(false);
+		sprite2dPtr->set_flip_h(velocity.x < 0.f);
 	}
 	else if (velocity.y != 0.f)
 	{
-		sprite->set_animation("up");
-		sprite->set_flip_v(velocity.y > 0.f);
+		sprite2dPtr->set_animation("up");
+		sprite2dPtr->set_flip_v(velocity.y > 0.f);
 	}
 }
 
@@ -80,7 +80,7 @@ void Player::_ready() {
 	hide();
 }
 
-void Player::bodyEntered(Node *body)
+void Player::bodyCollision(Node *body)
 {
 	hide();
 	emit_signal("hit");
