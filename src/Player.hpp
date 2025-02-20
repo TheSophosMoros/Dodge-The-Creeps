@@ -20,8 +20,8 @@ protected:
 public:
 	static void _register_methods();
 
-	void setSpeed(int new_speed);
-	[[nodiscard]] int getSpeed() const;
+	void setSpeed(const int new_speed) { speed = new_speed; }
+	[[nodiscard]] int getSpeed() const { return speed; }
 
 	Player();
 	~Player() override;

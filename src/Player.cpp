@@ -13,12 +13,11 @@ using namespace godot;
 
 void Player::_bind_methods()
 {
-	ClassDB::bind_method(D_METHOD("body_collision"), &Player::bodyCollision);
 	ClassDB::bind_method(D_METHOD("set_speed", "p_speed"), &Player::setSpeed);
 	ClassDB::bind_method(D_METHOD("get_speed"), &Player::getSpeed);
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "speed"), "set_speed", "get_speed");
-	ClassDB::add_signal("hit", {});
+	ADD_SIGNAL(MethodInfo("emit_hit_signal"));
 }
 
 void Player::_register_methods()
@@ -26,17 +25,10 @@ void Player::_register_methods()
 
 }
 
-void Player::setSpeed(const int new_speed) {
-	speed = new_speed;
-}
-
-int Player::getSpeed() const {
-	return speed;
-}
-
 Player::Player()
 {
 	speed = 400;
+	connect("body_entered", Callable(this, "body_collision"));
 }
 
 Player::~Player() = default;
@@ -81,8 +73,7 @@ void Player::_ready() {
 	//todo:: uncomment above when func::start is up and called at the beginning of the game
 }
 
-void Player::bodyCollision(Node *body)
-{
+void Player::bodyCollision(Node *body) {
 	hide();
 	emit_signal("hit");
 	get_node<CollisionShape2D>("CollisionShape2D")->set_disabled(true);

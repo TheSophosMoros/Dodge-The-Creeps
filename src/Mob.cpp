@@ -3,3 +3,23 @@
 //
 
 #include "Mob.hpp"
+
+using namespace godot;
+
+void Mob::_bind_methods()
+{
+
+}
+
+Mob::Mob()
+{
+}
+
+Mob::~Mob() = default;
+
+void Mob::_ready()
+{
+}
+
+
+
