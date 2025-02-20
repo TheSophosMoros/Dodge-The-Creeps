@@ -77,7 +77,8 @@ void Player::_process(const float delta)
 
 void Player::_ready() {
 	screenSize = get_viewport_rect().get_size();
-	hide();
+	//hide();
+	//todo:: uncomment above when func::start is up and called at the beginning of the game
 }
 
 void Player::bodyCollision(Node *body)
