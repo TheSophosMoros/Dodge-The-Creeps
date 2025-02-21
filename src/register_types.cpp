@@ -15,7 +15,6 @@ void initialize_gdextension_types(const ModuleInitializationLevel p_level)
 		return;
 	}
 	GDREGISTER_CLASS(Player);
-	GDREGISTER_CLASS(Mob);
 }
 
 void uninitialize_gdextension_types(const ModuleInitializationLevel p_level) {

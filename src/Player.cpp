@@ -20,11 +20,6 @@ void Player::_bind_methods()
 	ADD_SIGNAL(MethodInfo("emit_hit_signal"));
 }
 
-void Player::_register_methods()
-{
-
-}
-
 Player::Player()
 {
 	speed = 400;

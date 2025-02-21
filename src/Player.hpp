@@ -18,7 +18,6 @@ protected:
 	static void _bind_methods();
 
 public:
-	static void _register_methods();
 
 	void setSpeed(const int new_speed) { speed = new_speed; }
 	[[nodiscard]] int getSpeed() const { return speed; }

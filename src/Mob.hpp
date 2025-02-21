@@ -27,7 +27,6 @@ class Mob final : RigidBody2D{
 	Mob();
 	~Mob() override;
 
-	void _process(float delta);
 	void _ready() override;
 };
 
