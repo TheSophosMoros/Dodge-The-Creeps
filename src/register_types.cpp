@@ -7,6 +7,9 @@
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/core/defs.hpp>
 
+#include "Hud.hpp"
+#include "Main.hpp"
+
 using namespace godot;
 
 void initialize_gdextension_types(const ModuleInitializationLevel p_level)
@@ -14,7 +17,11 @@ void initialize_gdextension_types(const ModuleInitializationLevel p_level)
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
 	}
+
 	GDREGISTER_CLASS(Player);
+	GDREGISTER_CLASS(Mob);
+	GDREGISTER_CLASS(Main);
+	GDREGISTER_CLASS(HUD);
 }
 
 void uninitialize_gdextension_types(const ModuleInitializationLevel p_level) {

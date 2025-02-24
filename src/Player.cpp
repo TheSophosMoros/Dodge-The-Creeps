@@ -23,7 +23,7 @@ void Player::_bind_methods()
 Player::Player()
 {
 	speed = 400;
-	connect("body_entered", Callable(this, "body_collision"));
+	connect("body_entered", Callable(this, "bodyCollision"));
 }
 
 Player::~Player() = default;
@@ -64,8 +64,7 @@ void Player::_process(const float delta)
 
 void Player::_ready() {
 	screenSize = get_viewport_rect().get_size();
-	//hide();
-	//todo:: uncomment above when func::start is up and called at the beginning of the game
+	hide();
 }
 
 void Player::bodyCollision(Node *body) {
