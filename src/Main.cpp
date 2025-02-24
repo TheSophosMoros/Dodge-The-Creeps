@@ -6,18 +6,58 @@
 
 #include <cmath>
 
-#include "Hud.hpp"
 #include "Mob.hpp"
 
 #include <godot_cpp/classes/path2d.hpp>
 #include <godot_cpp/classes/path_follow2d.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
-#include <godot_cpp/classes/timer.hpp>
-#include <godot_cpp/classes/marker2d.hpp>
-
-#include "Player.hpp"
+#include <godot_cpp/classes/engine.hpp>
 
 using namespace godot;
+
+void Main::linkReferences()
+{
+  print_line("Getting ScoreTimer");
+  if (scoreTimer == nullptr)
+  {
+    scoreTimer = get_node<Timer>("ScoreTimer");
+    scoreTimer != nullptr
+      ? print_line("ScoreTimer Found")
+      : print_line("ScoreTimer Not Found");
+  } else print_line("ScoreTimer Already Linked");
+  print_line("Getting MobTimer");
+  if (mobTimer == nullptr)
+  {
+    mobTimer = get_node<Timer>("MobTimer");
+    mobTimer != nullptr
+      ? print_line("MobTimer Found")
+      : print_line("MobTimer Not Found");
+  } else print_line("MobTimer Already Linked");
+  print_line("Getting Player");
+  if (player == nullptr)
+  {
+    player = get_node<Player>("Player");
+    player != nullptr
+      ? print_line("Player Found")
+      : print_line("Player Not Found");
+  } else print_line("Player Already Linked");
+  print_line("Getting StartPosition");
+  if (startPosition == nullptr)
+  {
+    startPosition = get_node<Marker2D>("StartPosition");
+    startPosition != nullptr
+      ? print_line("StartPosition Found")
+      : print_line("StartPosition Not Found");
+  } else print_line("StartPosition Already Linked");
+  print_line("Getting HUD");
+  if (hud == nullptr)
+  {
+    hud = get_node<HUD>("HUD");
+    hud != nullptr
+      ? print_line("HUD Found")
+      : print_line("HUD Not Found");
+  } else print_line("HUD Already linked");
+}
 
 void Main::_bind_methods()
 {
@@ -38,6 +78,7 @@ Main::Main()
 {
   score = 0;
   rng.seed(std::random_device()());
+  linkReferences();
 }
 
 Main::~Main()
@@ -46,14 +87,14 @@ Main::~Main()
 
 void Main::onStartTimerTimeout() const
 {
-  get_node<Timer>("ScoreTimer")->start();
-  get_node<Timer>("MobTimer")->start();
+  scoreTimer->start();
+  mobTimer->start();
 }
 
 void Main::onScoreTimerTimeout()
 {
   ++score;
-  get_node<HUD>("HUD")->updateScore(score);
+  hud->updateScore(score);
 }
 
 void Main::onMobTimerTimeout()
@@ -85,11 +126,11 @@ void Main::onMobTimerTimeout()
   add_child(mobNode);
 }
 
-void Main::gameOver()
+void Main::gameOver() const
 {
-  get_node<Timer>("ScoreTimer")->stop();
-  get_node<Timer>("MobTimer")->stop();
-  get_node<HUD>("HUD")->showGameOverMessage();
+  scoreTimer->stop();
+  mobTimer->stop();
+  hud->showGameOverMessage();
 
   get_tree()->call_group("mobs", "queue_free");
 }
@@ -97,12 +138,13 @@ void Main::gameOver()
 void Main::newGame()
 {
   score = 0;
-  get_node<Player>("Player")
-  ->start(get_node<Marker2D>("StartPosition")
-          ->get_position());
+  if (player != nullptr || startPosition != nullptr) linkReferences();
+  player->start(startPosition->get_position());
 }
 
 void Main::_ready()
 {
+  if (Engine::get_singleton()->is_editor_hint()) return;
+  linkReferences();
   newGame();
 }

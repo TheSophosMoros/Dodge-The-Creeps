@@ -30,7 +30,8 @@ Player::~Player() = default;
 
 void Player::_process(const float delta)
 {
-	if (Engine::get_singleton()->is_editor_hint()) return; //Work Around for editing that stops the error of 'InputMap action "" doesn't exist'
+	if (Engine::get_singleton()->is_editor_hint()) return;
+	//Work Around for editing that stops the error of 'InputMap action "" doesn't exist'
 	const auto inputPtr = Input::get_singleton();
 	auto velocity = Vector2();
 
