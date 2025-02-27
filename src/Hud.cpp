@@ -22,7 +22,8 @@ void HUD::_bind_methods()
   ClassDB::bind_method(D_METHOD("_on_game_over_timer_timeout"), &HUD::onGameOverTimerTimeout);
   ClassDB::bind_method(D_METHOD("_on_game_over_finish_restart"), &HUD::onGameOverFinishRestart);
 
-  ADD_SIGNAL(MethodInfo("emit_start_game"));
+  ADD_SIGNAL(MethodInfo("start_game"));
+
 }
 
 HUD::HUD()
@@ -56,20 +57,21 @@ void HUD::showGameOverMessage()
 {
   showMessage("Game Over");
   const auto messageTimer = get_node<Timer>("MessageTimer");
+  if (messageTimer != nullptr) print_line("connecting to next message");
+  messageTimer->connect("timeout", Callable(this, "_on_game_over_timer_timeout"), CONNECT_ONE_SHOT);
   messageTimer->start();
-
-  messageTimer->connect("timeout", Callable(this, "onGameOverTimerTimeout"));
 }
 
 void HUD::onGameOverTimerTimeout()
 {
+  print_line("Restarting game");
   auto messageLabel = get_node<Label>("Message");
   messageLabel->set_text("Dodge the Creeps!");
   messageLabel->show();
 
   get_tree()
   ->create_timer(1)
-  ->connect("timeout", Callable(this, "onGameOverFinishRestart"));
+  ->connect("timeout", Callable(this, "_on_game_over_finish_restart"), CONNECT_ONE_SHOT);
 }
 
 void HUD::onGameOverFinishRestart() const

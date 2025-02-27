@@ -15,15 +15,15 @@ void Player::_bind_methods()
 {
 	ClassDB::bind_method(D_METHOD("set_speed", "p_speed"), &Player::setSpeed);
 	ClassDB::bind_method(D_METHOD("get_speed"), &Player::getSpeed);
+	ClassDB::bind_method(D_METHOD("_body_collision", "p_body"), &Player::bodyCollision);
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "speed"), "set_speed", "get_speed");
-	ADD_SIGNAL(MethodInfo("emit_hit_signal"));
+	ADD_SIGNAL(MethodInfo("hit"));
 }
 
 Player::Player()
 {
 	speed = 400;
-	connect("body_entered", Callable(this, "bodyCollision"));
 }
 
 Player::~Player() = default;
@@ -76,6 +76,7 @@ void Player::bodyCollision(Node *body) {
 
 void Player::start(const Vector2 position)
 {
+	print_line("Setting player position");
 	set_position(position);
 	show();
 	get_node<CollisionShape2D>("CollisionShape2D")->set_disabled(false);
