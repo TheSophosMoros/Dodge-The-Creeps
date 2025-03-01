@@ -6,9 +6,7 @@
 #define MOB_HPP
 
 #include <random>
-
 #include <godot_cpp/classes/rigid_body2d.hpp>
-#include <godot_cpp/classes/animated_sprite2d.hpp>
 
 namespace godot {
 class Mob final : public RigidBody2D{
@@ -20,22 +18,10 @@ class Mob final : public RigidBody2D{
 	int maximumSpeed;
 	std::mt19937 rng;
 	std::uniform_real_distribution<> dist;
-	AnimatedSprite2D* animatedSprite;
-
 
 	void setRandomAnimation();
 
 	public:
-	enum ChildNodeEnum
-	{
-		ALL,
-		ANIMATED_SPRITE
-	};
-
-	template<typename... ChildNodes>
-	void loadNodes(ChildNodes... children);
-	void processNode(ChildNodeEnum child);
-
 	static void _bind_methods();
 
 	void setMinimumSpeed(const int minimum_speed) { minimumSpeed = minimum_speed; }

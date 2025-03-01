@@ -9,70 +9,55 @@
 #include "Mob.hpp"
 
 #include <godot_cpp/classes/path2d.hpp>
+#include <godot_cpp/classes/path_follow2d.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
 #include <godot_cpp/classes/engine.hpp>
+#include <godot_cpp/classes/audio_stream_player.hpp>
 
 using namespace godot;
 
-template<typename... ChildNodes>
-void Main::loadNodes(ChildNodes... children)
+void Main::linkReferences()
 {
-  (processNode(children), ...);
-}
-
-void Main::processNode(const ChildNodeEnum child)
-{
-  switch (child)
+  print_line("Getting ScoreTimer");
+  if (scoreTimer == nullptr)
   {
-    case SCORE_TIMER:
-      if (scoreTimer == nullptr)
-            scoreTimer = get_node<Timer>("ScoreTimer");
-      break;
-    case MOB_TIMER:
-      if (mobTimer == nullptr)
-        mobTimer = get_node<Timer>("MobTimer");
-      break;
-    case START_TIMER:
-      if (startTimer == nullptr)
-        startTimer = get_node<Timer>("StartTimer");
-      break;
-    case PLAYER:
-      if (player == nullptr)
-        player = get_node<Player>("Player");
-      break;
-    case START_POSITION:
-      if (startPosition == nullptr)
-        startPosition = get_node<Marker2D>("StartPosition");
-      break;
-    case HEADS_UP_DISPLAY:
-      if (hud == nullptr)
-        hud = get_node<HUD>("HUD");
-      break;
-    case MUSIC_AUDIO_PLAYER:
-      if (musicAudioPlayer == nullptr)
-        musicAudioPlayer = get_node<AudioStreamPlayer>("Music");
-      break;
-    case DEATH_AUDIO_PLAYER:
-      if (deathAudioPlayer == nullptr)
-        deathAudioPlayer = get_node<AudioStreamPlayer>("DeathSound");
-      break;
-    case MOB_SPAWN_LOCAL:
-      if (mobSpawnLocal == nullptr)
-        mobSpawnLocal = get_node<PathFollow2D>("MobPath/MobSpawnLocation");
-      break;
-    case ALL:
-      loadNodes(SCORE_TIMER,
-                MOB_TIMER,
-                START_TIMER,
-                PLAYER,
-                START_POSITION,
-                HEADS_UP_DISPLAY,
-                MUSIC_AUDIO_PLAYER,
-                DEATH_AUDIO_PLAYER,
-                MOB_SPAWN_LOCAL);
-    break;
-    default: break;
-  }
+    scoreTimer = get_node<Timer>("ScoreTimer");
+    scoreTimer != nullptr
+      ? print_line("ScoreTimer Found")
+      : print_line("ScoreTimer Not Found");
+  } else print_line("ScoreTimer Already Linked");
+  print_line("Getting MobTimer");
+  if (mobTimer == nullptr)
+  {
+    mobTimer = get_node<Timer>("MobTimer");
+    mobTimer != nullptr
+      ? print_line("MobTimer Found")
+      : print_line("MobTimer Not Found");
+  } else print_line("MobTimer Already Linked");
+  print_line("Getting Player");
+  if (player == nullptr)
+  {
+    player = get_node<Player>("Player");
+    player != nullptr
+      ? print_line("Player Found")
+      : print_line("Player Not Found");
+  } else print_line("Player Already Linked");
+  print_line("Getting StartPosition");
+  if (startPosition == nullptr)
+  {
+    startPosition = get_node<Marker2D>("StartPosition");
+    startPosition != nullptr
+      ? print_line("StartPosition Found")
+      : print_line("StartPosition Not Found");
+  } else print_line("StartPosition Already Linked");
+  print_line("Getting HUD");
+  if (hud == nullptr)
+  {
+    hud = get_node<HUD>("HUD");
+    hud != nullptr
+      ? print_line("HUD Found")
+      : print_line("HUD Not Found");
+  } else print_line("HUD Already linked");
 }
 
 void Main::_bind_methods()
@@ -95,76 +80,59 @@ Main::Main()
 {
   score = 0;
   rng.seed(std::random_device()());
-  scoreTimer = nullptr;
-  mobTimer = nullptr;
-  startTimer = nullptr;
-  player = nullptr;
-  startPosition = nullptr;
-  hud = nullptr;
-  musicAudioPlayer = nullptr;
-  deathAudioPlayer = nullptr;
-  mobSpawnLocal = nullptr;
+  if (!Engine::get_singleton()->is_editor_hint()) linkReferences();
 }
 
 Main::~Main()
-= default;
-
-void Main::onStartTimerTimeout()
 {
-  loadNodes(SCORE_TIMER, MOB_TIMER);
+}
 
+void Main::onStartTimerTimeout() const
+{
   scoreTimer->start();
   mobTimer->start();
 }
 
 void Main::onScoreTimerTimeout()
 {
-  loadNodes(HEADS_UP_DISPLAY);
-
   ++score;
   hud->updateScore(score);
 }
 
 void Main::onMobTimerTimeout()
 {
-  loadNodes(MOB_SPAWN_LOCAL);
-
   //Create a new Instance of the Mob scene
-  const auto nodePtrFromMobScene = mobScene->instantiate();
-  const auto mobPtr = cast_to<Mob>(nodePtrFromMobScene);
+  const auto mobNode = mobScene->instantiate();
+  const auto mob = cast_to<Mob>(mobNode);
 
   //Choose a random location on Path2D
-  mobSpawnLocal->set_progress_ratio(dist(rng));
+  const auto mobSpawnLocation = get_node<PathFollow2D>("MobPath/MobSpawnLocation");
+  mobSpawnLocation->set_progress_ratio(dist(rng));
 
   //Set the mob's direction perpendicular to the path direction.
-  float direction = mobSpawnLocal->get_rotation() + M_PI / 2; // NOLINT(*-narrowing-conversions)
+  float direction = mobSpawnLocation->get_rotation() + M_PI / 2; // NOLINT(*-narrowing-conversions)
 
   //Set the mob's position to a random location
-  mobPtr->set_position(mobSpawnLocal->get_position());
+  mob->set_position(mobSpawnLocation->get_position());
 
   //Add some randomness to the direction.
   dist.param(std::uniform_real_distribution<float>::param_type(-M_PI / 2, M_PI / 2));
   direction += dist(rng);
-  mobPtr->set_rotation(direction);
+  mob->set_rotation(direction);
 
   //Choose a random velocity for the mob
-  dist.param(std::uniform_real_distribution<float>::param_type(mobPtr->getMinimumSpeed(), mobPtr->getMaximumSpeed())); // NOLINT(*-narrowing-conversions)
-  mobPtr->set_linear_velocity(Vector2(dist(rng), 0).rotated(direction));
+  dist.param(std::uniform_real_distribution<float>::param_type(mob->getMinimumSpeed(), mob->getMaximumSpeed())); // NOLINT(*-narrowing-conversions)
+  mob->set_linear_velocity(Vector2(dist(rng), 0).rotated(direction));
 
   //Spawn the mob by adding it to the Main scene
-  add_child(nodePtrFromMobScene);
+  add_child(mobNode);
 }
 
-void Main::gameOver()
+void Main::gameOver() const
 {
-  loadNodes(MUSIC_AUDIO_PLAYER,
-            DEATH_AUDIO_PLAYER,
-            SCORE_TIMER,
-            MOB_TIMER,
-            HEADS_UP_DISPLAY);
+  get_node<AudioStreamPlayer>("Music")->stop();
+  get_node<AudioStreamPlayer>("DeathSound")->play();
 
-  musicAudioPlayer->stop();
-  deathAudioPlayer->play();
   scoreTimer->stop();
   mobTimer->stop();
   hud->showGameOverMessage();
@@ -174,21 +142,18 @@ void Main::gameOver()
 
 void Main::newGame()
 {
-  loadNodes(MUSIC_AUDIO_PLAYER,
-            PLAYER,
-            START_POSITION,
-            START_TIMER,
-            HEADS_UP_DISPLAY);
-  print_line("new_game");
   score = 0;
-  musicAudioPlayer->play();
+  get_node<AudioStreamPlayer>("Music")->play();
+  print_line("New Game Started");
+  if (player != nullptr || startPosition != nullptr) linkReferences();
+  print_line("Attempting to move player");
   player->start(startPosition->get_position());
-  startTimer->start();
+  get_node<Timer>("StartTimer")->start();
   hud->updateScore(score);
   hud->showMessage("Get Ready");
 }
 
 void Main::_ready()
 {
-  loadNodes(ALL);
+  linkReferences();
 }
