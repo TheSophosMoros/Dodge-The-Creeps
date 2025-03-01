@@ -17,59 +17,48 @@ using namespace godot;
 template<typename... ChildNodes>
 void Main::loadNodes(ChildNodes... children)
 {
-  print_line("Main::loadNodes");
   (processNode(children), ...);
 }
 
 void Main::processNode(const ChildNodeEnum child)
 {
-  print_line("Main::processNode");
   switch (child)
   {
     case SCORE_TIMER:
       if (scoreTimer == nullptr)
             scoreTimer = get_node<Timer>("ScoreTimer");
-      else print_line("ScoreTimer not found");
       break;
     case MOB_TIMER:
       if (mobTimer == nullptr)
         mobTimer = get_node<Timer>("MobTimer");
-      else print_line("MobTimer not found");
       break;
     case START_TIMER:
       if (startTimer == nullptr)
         startTimer = get_node<Timer>("StartTimer");
-      else print_line("StartTimer not found");
       break;
     case PLAYER:
       if (player == nullptr)
         player = get_node<Player>("Player");
-      else print_line("Player not found");
       break;
     case START_POSITION:
       if (startPosition == nullptr)
         startPosition = get_node<Marker2D>("StartPosition");
-      else print_line("StartPosition not found");
       break;
     case HEADS_UP_DISPLAY:
       if (hud == nullptr)
         hud = get_node<HUD>("HUD");
-      else print_line("HUD not found");
       break;
     case MUSIC_AUDIO_PLAYER:
       if (musicAudioPlayer == nullptr)
         musicAudioPlayer = get_node<AudioStreamPlayer>("Music");
-      else print_line("MusicAudioPlayer not found");
       break;
     case DEATH_AUDIO_PLAYER:
       if (deathAudioPlayer == nullptr)
         deathAudioPlayer = get_node<AudioStreamPlayer>("DeathSound");
-      else print_line("DeathAudioPlayer not found");
       break;
     case MOB_SPAWN_LOCAL:
       if (mobSpawnLocal == nullptr)
         mobSpawnLocal = get_node<PathFollow2D>("MobPath/MobSpawnLocation");
-      else print_line("MobSpawnLocal not found");
       break;
     case ALL:
       loadNodes(SCORE_TIMER,
@@ -99,6 +88,7 @@ void Main::_bind_methods()
   ClassDB::bind_method(D_METHOD("get_mob_scene"), &Main::getMobScene);
 
   ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "mob_scene"), "set_mob_scene", "get_mob_scene");
+
 }
 
 Main::Main()
@@ -122,6 +112,7 @@ Main::~Main()
 void Main::onStartTimerTimeout()
 {
   loadNodes(SCORE_TIMER, MOB_TIMER);
+
   scoreTimer->start();
   mobTimer->start();
 }
@@ -129,6 +120,7 @@ void Main::onStartTimerTimeout()
 void Main::onScoreTimerTimeout()
 {
   loadNodes(HEADS_UP_DISPLAY);
+
   ++score;
   hud->updateScore(score);
 }
@@ -170,6 +162,7 @@ void Main::gameOver()
             SCORE_TIMER,
             MOB_TIMER,
             HEADS_UP_DISPLAY);
+
   musicAudioPlayer->stop();
   deathAudioPlayer->play();
   scoreTimer->stop();
@@ -181,12 +174,12 @@ void Main::gameOver()
 
 void Main::newGame()
 {
-  print_line("new_game");
   loadNodes(MUSIC_AUDIO_PLAYER,
             PLAYER,
             START_POSITION,
             START_TIMER,
             HEADS_UP_DISPLAY);
+  print_line("new_game");
   score = 0;
   musicAudioPlayer->play();
   player->start(startPosition->get_position());

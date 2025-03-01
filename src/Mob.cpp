@@ -11,19 +11,16 @@ using namespace godot;
 template<typename ... ChildNodes>
 void Mob::loadNodes(ChildNodes... children)
 {
-  print_line("Mob::loadNodes");
   (processNode(children), ...);
 }
 
 void Mob::processNode(const ChildNodeEnum child)
 {
-  print_line("Mob::processNode");
   switch (child)
   {
     case ANIMATED_SPRITE:
       if (animatedSprite == nullptr)
         animatedSprite = this->get_node<AnimatedSprite2D>("AnimatedSprite2D");
-      else print_line("AnimatedSprite2D not found");
     break;
     case ALL:
       loadNodes(ANIMATED_SPRITE);

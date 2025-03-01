@@ -25,7 +25,7 @@ class Mob final : public RigidBody2D{
 
 	void setRandomAnimation();
 
-public:
+	public:
 	enum ChildNodeEnum
 	{
 		ALL,
