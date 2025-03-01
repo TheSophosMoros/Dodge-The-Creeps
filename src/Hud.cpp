@@ -4,53 +4,14 @@
 
 #include "Hud.hpp"
 
+#include <godot_cpp/classes/label.hpp>
+#include <godot_cpp/classes/timer.hpp>
+#include <godot_cpp/classes/button.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
 #include <godot_cpp/classes/scene_tree_timer.hpp>
 
 
 using namespace godot;
-
-template<typename ... ChildNodes>
-void HUD::loadNodes(ChildNodes... children)
-{
-  print_line("HUD::loadNodes");
-  (processNode(children), ...);
-}
-
-inline void HUD::processNode(const ChildNodeEnum child)
-{
-  print_line("HUD::proceesNodes");
-  switch (child)
-  {
-    case START_BUTTON:
-      if (startButton == nullptr)
-        startButton = get_node<Button>("StartButton");
-      else print_line("StartButton not found");
-      break;
-    case MESSAGE_LABEL:
-      if (messageLabel == nullptr)
-        messageLabel = get_node<Label>("MessageLabel");
-      else print_line("MessageLabel not found");
-      break;
-    case MESSAGE_TIMER:
-      if (messageTimer == nullptr)
-        messageTimer = get_node<Timer>("MessageTimer");
-      else print_line("MessageTimer not found");
-      break;
-    case SCORE_LABEL:
-      if (scoreLabel == nullptr)
-        scoreLabel = get_node<Label>("ScoreLabel");
-      else print_line("ScoreLabel not found");
-      break;
-    case ALL:
-      loadNodes(START_BUTTON,
-                MESSAGE_LABEL,
-                MESSAGE_TIMER,
-                SCORE_LABEL);
-      break;
-    default: break;
-  }
-}
 
 void HUD::_bind_methods()
 {
@@ -61,68 +22,62 @@ void HUD::_bind_methods()
   ClassDB::bind_method(D_METHOD("_on_game_over_timer_timeout"), &HUD::onGameOverTimerTimeout);
   ClassDB::bind_method(D_METHOD("_on_game_over_finish_restart"), &HUD::onGameOverFinishRestart);
 
-  ADD_SIGNAL(MethodInfo("start_game"));
+  ADD_SIGNAL(MethodInfo("emit_start_game"));
 }
 
 HUD::HUD()
 {
-  startButton = nullptr;
-  messageLabel = nullptr;
-  messageTimer = nullptr;
-  scoreLabel = nullptr;
 }
 
-HUD::~HUD() = default;
+HUD::~HUD()
+{
+}
 
 void HUD::onStartButtonPressed()
 {
-  print_line("start button pressed");
-  loadNodes(ALL);
-  startButton->hide();
+  get_node<Button>("StartButton")->hide();
   emit_signal("start_game");
 }
 
-void HUD::onMessageTimerTimeout()
+void HUD::onMessageTimerTimeout() const
 {
-  loadNodes(MESSAGE_LABEL);
-  messageLabel->hide();
+  get_node<Label>("Message")->hide();
 }
 
-void HUD::showMessage(const String &message)
+void HUD::showMessage(const String &message) const
 {
-  loadNodes(MESSAGE_LABEL, MESSAGE_TIMER);
+  auto messageLabel = get_node<Label>("Message");
   messageLabel->set_text(message);
   messageLabel->show();
-  messageTimer->start();
+  get_node<Timer>("MessageTimer")->start();
 }
 
 void HUD::showGameOverMessage()
 {
   showMessage("Game Over");
-  loadNodes(MESSAGE_TIMER);
-  messageTimer->connect("timeout", Callable(this, "_on_game_over_timer_timeout"), CONNECT_ONE_SHOT);
+  const auto messageTimer = get_node<Timer>("MessageTimer");
   messageTimer->start();
+
+  messageTimer->connect("timeout", Callable(this, "onGameOverTimerTimeout"));
 }
 
 void HUD::onGameOverTimerTimeout()
 {
-  loadNodes(MESSAGE_LABEL);
+  auto messageLabel = get_node<Label>("Message");
   messageLabel->set_text("Dodge the Creeps!");
   messageLabel->show();
 
   get_tree()
   ->create_timer(1)
-  ->connect("timeout", Callable(this, "_on_game_over_finish_restart"), CONNECT_ONE_SHOT);
+  ->connect("timeout", Callable(this, "onGameOverFinishRestart"));
 }
 
-void HUD::onGameOverFinishRestart()
+void HUD::onGameOverFinishRestart() const
 {
-  loadNodes(START_BUTTON);
-  startButton->show();
+  get_node<Button>("StartButton")->show();
 }
 
-void HUD::updateScore(const int score)
+void HUD::updateScore(const int score) const
 {
-  loadNodes(SCORE_LABEL);
-  scoreLabel->set_text(String::num_int64(score));
+  get_node<Label>("ScoreLabel")->set_text(String::num_int64(score));
 }

@@ -4,44 +4,23 @@
 
 #include "Mob.hpp"
 
+#include <godot_cpp/classes/animated_sprite2d.hpp>
 #include <godot_cpp/classes/sprite_frames.hpp>
 
 using namespace godot;
 
-template<typename ... ChildNodes>
-void Mob::loadNodes(ChildNodes... children)
-{
-  print_line("Mob::loadNodes");
-  (processNode(children), ...);
-}
-
-void Mob::processNode(const ChildNodeEnum child)
-{
-  print_line("Mob::processNode");
-  switch (child)
-  {
-    case ANIMATED_SPRITE:
-      if (animatedSprite == nullptr)
-        animatedSprite = this->get_node<AnimatedSprite2D>("AnimatedSprite2D");
-      else print_line("AnimatedSprite2D not found");
-    break;
-    case ALL:
-      loadNodes(ANIMATED_SPRITE);
-    break;
-    default: break;
-  }
-}
-
 void Mob::setRandomAnimation()
 {
-  loadNodes(ANIMATED_SPRITE);
+  const auto animatedSprite = this->get_node<AnimatedSprite2D>("AnimatedSprite2D");
+  if (!animatedSprite) return;
   const auto animatedTypesArray = animatedSprite->get_sprite_frames()->get_animation_names();
+  if (!animatedTypesArray) return;
 
-  dist.param(std::uniform_real_distribution<>::param_type(0, animatedTypesArray.size() - 1));
+  dist.param(std::uniform_real_distribution<>::param_type(0, animatedTypesArray.size()-1));
 
   animatedSprite->set_animation(animatedTypesArray[dist(rng)]);
-  animatedSprite->play();
 }
+
 
 void Mob::_bind_methods()
 {
@@ -65,14 +44,12 @@ Mob::Mob()
   minimumSpeed = DEFAULT_MINIMUM_SPEED;
   maximumSpeed = DEFAULT_MAXIMUM_SPEED;
   rng.seed(std::random_device()());
-  animatedSprite = nullptr;
 }
 
 Mob::~Mob() = default;
 
 void Mob::_ready()
 {
-  loadNodes(ALL);
   setRandomAnimation();
 }
 
