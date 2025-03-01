@@ -57,6 +57,7 @@ void Player::_process(const float delta)
 {
 	if (Engine::get_singleton()->is_editor_hint()) return;
 	//Work Around for editing that stops the error of 'InputMap action "" doesn't exist'
+	loadNodes(ANIMATED_SPRITE);
 	const auto inputPtr = Input::get_singleton();
 	auto velocity = Vector2();
 
@@ -65,7 +66,6 @@ void Player::_process(const float delta)
 	if (inputPtr->is_action_pressed("move_up")) velocity.y -= 1;
 	if (inputPtr->is_action_pressed("move_down")) velocity.y += 1;
 
-	loadNodes(ANIMATED_SPRITE);
 	velocity = velocity.normalized() * static_cast<float>(speed);
 	velocity.length() > 0 ?	animatedSprite->play() : animatedSprite->stop();
 
@@ -89,23 +89,23 @@ void Player::_process(const float delta)
 }
 
 void Player::_ready() {
+	loadNodes(ALL);
 	screenSize = get_viewport_rect().get_size();
 	hide();
-	loadNodes(ALL);
 }
 
 void Player::bodyCollision(Node *body) {
+	loadNodes(COLLISION_SHAPE);
 	hide();
 	emit_signal("hit");
-	loadNodes(COLLISION_SHAPE);
 	collisionShape->set_deferred("disabled", true);
 }
 
 void Player::start(const Vector2 position)
 {
+	loadNodes(COLLISION_SHAPE);
 	print_line("Setting player position");
 	set_position(position);
 	show();
-	loadNodes(COLLISION_SHAPE);
 	collisionShape->set_disabled(false);
 }

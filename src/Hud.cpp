@@ -13,34 +13,40 @@ using namespace godot;
 template<typename ... ChildNodes>
 void HUD::loadNodes(ChildNodes... children)
 {
+  print_line("HUD::loadNodes");
   (processNode(children), ...);
 }
 
 inline void HUD::processNode(const ChildNodeEnum child)
 {
+  print_line("HUD::proceesNodes");
   switch (child)
   {
+    case START_BUTTON:
+      if (startButton == nullptr)
+        startButton = get_node<Button>("StartButton");
+      else print_line("StartButton not found");
+      break;
+    case MESSAGE_LABEL:
+      if (messageLabel == nullptr)
+        messageLabel = get_node<Label>("MessageLabel");
+      else print_line("MessageLabel not found");
+      break;
+    case MESSAGE_TIMER:
+      if (messageTimer == nullptr)
+        messageTimer = get_node<Timer>("MessageTimer");
+      else print_line("MessageTimer not found");
+      break;
+    case SCORE_LABEL:
+      if (scoreLabel == nullptr)
+        scoreLabel = get_node<Label>("ScoreLabel");
+      else print_line("ScoreLabel not found");
+      break;
     case ALL:
       loadNodes(START_BUTTON,
                 MESSAGE_LABEL,
                 MESSAGE_TIMER,
                 SCORE_LABEL);
-      break;
-    case START_BUTTON:
-      if (startButton == nullptr)
-        startButton = get_node<Button>("StartButton");
-      break;
-    case MESSAGE_LABEL:
-      if (messageLabel == nullptr)
-        messageLabel = get_node<Label>("MessageLabel");
-      break;
-    case MESSAGE_TIMER:
-      if (messageTimer == nullptr)
-        messageTimer = get_node<Timer>("MessageTimer");
-      break;
-    case SCORE_LABEL:
-      if (scoreLabel == nullptr)
-        scoreLabel = get_node<Label>("ScoreLabel");
       break;
     default: break;
   }
@@ -66,11 +72,11 @@ HUD::HUD()
   scoreLabel = nullptr;
 }
 
-HUD::~HUD()
-= default;
+HUD::~HUD() = default;
 
 void HUD::onStartButtonPressed()
 {
+  print_line("start button pressed");
   loadNodes(ALL);
   startButton->hide();
   emit_signal("start_game");
