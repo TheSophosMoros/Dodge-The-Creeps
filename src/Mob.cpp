@@ -19,7 +19,6 @@ void Mob::setRandomAnimation()
   dist.param(std::uniform_real_distribution<>::param_type(0, animatedTypesArray.size()-1));
 
   animatedSprite->set_animation(animatedTypesArray[dist(rng)]);
-  animatedSprite->play();
 }
 
 

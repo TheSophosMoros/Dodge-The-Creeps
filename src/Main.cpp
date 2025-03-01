@@ -12,7 +12,6 @@
 #include <godot_cpp/classes/path_follow2d.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
 #include <godot_cpp/classes/engine.hpp>
-#include <godot_cpp/classes/audio_stream_player.hpp>
 
 using namespace godot;
 
@@ -73,14 +72,13 @@ void Main::_bind_methods()
   ClassDB::bind_method(D_METHOD("get_mob_scene"), &Main::getMobScene);
 
   ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "mob_scene"), "set_mob_scene", "get_mob_scene");
-
 }
 
 Main::Main()
 {
   score = 0;
   rng.seed(std::random_device()());
-  if (!Engine::get_singleton()->is_editor_hint()) linkReferences();
+  linkReferences();
 }
 
 Main::~Main()
@@ -110,18 +108,18 @@ void Main::onMobTimerTimeout()
   mobSpawnLocation->set_progress_ratio(dist(rng));
 
   //Set the mob's direction perpendicular to the path direction.
-  float direction = mobSpawnLocation->get_rotation() + M_PI / 2; // NOLINT(*-narrowing-conversions)
+  double direction = mobSpawnLocation->get_rotation() + M_PI / 2;
 
   //Set the mob's position to a random location
   mob->set_position(mobSpawnLocation->get_position());
 
   //Add some randomness to the direction.
-  dist.param(std::uniform_real_distribution<float>::param_type(-M_PI / 2, M_PI / 2));
+  dist.param(std::uniform_real_distribution<>::param_type(-M_PI / 2, M_PI / 2));
   direction += dist(rng);
   mob->set_rotation(direction);
 
   //Choose a random velocity for the mob
-  dist.param(std::uniform_real_distribution<float>::param_type(mob->getMinimumSpeed(), mob->getMaximumSpeed())); // NOLINT(*-narrowing-conversions)
+  dist.param(std::uniform_real_distribution<>::param_type(mob->getMinimumSpeed(), mob->getMaximumSpeed()));
   mob->set_linear_velocity(Vector2(dist(rng), 0).rotated(direction));
 
   //Spawn the mob by adding it to the Main scene
@@ -130,9 +128,6 @@ void Main::onMobTimerTimeout()
 
 void Main::gameOver() const
 {
-  get_node<AudioStreamPlayer>("Music")->stop();
-  get_node<AudioStreamPlayer>("DeathSound")->play();
-
   scoreTimer->stop();
   mobTimer->stop();
   hud->showGameOverMessage();
@@ -143,17 +138,13 @@ void Main::gameOver() const
 void Main::newGame()
 {
   score = 0;
-  get_node<AudioStreamPlayer>("Music")->play();
-  print_line("New Game Started");
   if (player != nullptr || startPosition != nullptr) linkReferences();
-  print_line("Attempting to move player");
   player->start(startPosition->get_position());
-  get_node<Timer>("StartTimer")->start();
-  hud->updateScore(score);
-  hud->showMessage("Get Ready");
 }
 
 void Main::_ready()
 {
+  if (Engine::get_singleton()->is_editor_hint()) return;
   linkReferences();
+  newGame();
 }
