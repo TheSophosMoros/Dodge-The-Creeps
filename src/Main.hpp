@@ -14,17 +14,19 @@
 #include "Hud.hpp"
 #include "Player.hpp"
 
-namespace godot {
-class Main final : public Node {
-  GDCLASS(Main, Node);
+namespace godot
+{
+class Main final : public Node
+{
+  GDCLASS( Main, Node );
   Ref<PackedScene> mobScene;
   std::mt19937 rng;
   std::uniform_real_distribution<float> dist;
-  Timer* scoreTimer{};
-  Timer* mobTimer{};
-  Player* player{};
-  Marker2D* startPosition{};
-  HUD* hud{};
+  Timer *scoreTimer;
+  Timer *mobTimer;
+  Player *player;
+  Marker2D *startPosition;
+  HUD *hud;
 
   int score;
 
@@ -35,16 +37,20 @@ protected:
 
 public:
   Main();
+
   ~Main() override;
 
   void onStartTimerTimeout() const;
+
   void onScoreTimerTimeout();
+
   void onMobTimerTimeout();
 
-  void setMobScene(const Ref<PackedScene> &mobScene) {this->mobScene = mobScene;};
-  [[nodiscard]] Ref<PackedScene> getMobScene() {return mobScene;};
+  void setMobScene(const Ref<PackedScene> &mobScene) { this->mobScene = mobScene; };
+  [[nodiscard]] Ref<PackedScene> getMobScene() { return mobScene; };
 
   void gameOver() const;
+
   void newGame();
 
   void _ready() override;

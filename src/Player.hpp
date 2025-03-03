@@ -6,31 +6,33 @@
 #define PLAYER_HPP
 #include <godot_cpp/classes/area2d.hpp>
 
-namespace godot {
+namespace godot
+{
+class Player final : public Area2D
+{
+  GDCLASS( Player, Area2D );
 
-class Player final : public Area2D{
-	GDCLASS(Player, Area2D);
-
-	int speed{};
-	Vector2 screenSize;
+  int speed{};
+  Vector2 screenSize;
 
 protected:
-	static void _bind_methods();
+  static void _bind_methods();
 
 public:
+  void setSpeed(const int new_speed) { speed = new_speed; }
+  [[nodiscard]] int getSpeed() const { return speed; }
 
-	void setSpeed(const int new_speed) { speed = new_speed; }
-	[[nodiscard]] int getSpeed() const { return speed; }
+  Player();
 
-	Player();
-	~Player() override;
+  ~Player() override;
 
-	void _process(float delta);
-	void _ready() override;
+  void _process(float delta);
 
-	void bodyCollision(Node *body);
-	void start(Vector2 position);
+  void _ready() override;
+
+  void bodyCollision(Node *body);
+
+  void start(Vector2 position);
 };
-
 }
 #endif //PLAYER_HPP

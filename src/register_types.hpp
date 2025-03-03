@@ -6,6 +6,7 @@
 using namespace godot;
 
 void initialize_gdextension_types(ModuleInitializationLevel p_level);
+
 void uninitialize_gdextension_types(ModuleInitializationLevel p_level);
 
 #endif // EXAMPLE_REGISTER_TYPES_H
