@@ -71,7 +71,7 @@ void Player::_ready() {
 void Player::bodyCollision(Node *body) {
 	hide();
 	emit_signal("hit");
-	get_node<CollisionShape2D>("CollisionShape2D")->set_disabled(true);
+	get_node<CollisionShape2D>("CollisionShape2D")->set_deferred("disabled", true);
 }
 
 void Player::start(const Vector2 position)

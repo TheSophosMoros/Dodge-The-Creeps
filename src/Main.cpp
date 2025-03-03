@@ -80,7 +80,6 @@ Main::Main()
 {
   score = 0;
   rng.seed(std::random_device()());
-  if (!Engine::get_singleton()->is_editor_hint()) linkReferences();
 }
 
 Main::~Main()
