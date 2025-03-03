@@ -19,12 +19,12 @@ class Main final : public Node {
   GDCLASS(Main, Node);
   Ref<PackedScene> mobScene;
   std::mt19937 rng;
-  std::uniform_real_distribution<> dist;
-  Timer* scoreTimer;
-  Timer* mobTimer;
-  Player* player;
-  Marker2D* startPosition;
-  HUD* hud;
+  std::uniform_real_distribution<float> dist;
+  Timer* scoreTimer{};
+  Timer* mobTimer{};
+  Player* player{};
+  Marker2D* startPosition{};
+  HUD* hud{};
 
   int score;
 
