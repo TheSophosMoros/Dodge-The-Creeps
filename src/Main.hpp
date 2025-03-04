@@ -26,9 +26,32 @@ class Main final : public Node {
   Marker2D* startPosition{};
   HUD* hud{};
 
+	struct {
+		mutable Timer* scoreTimer;
+		mutable Timer* mobTimer;
+		mutable Player* player;
+		mutable Marker2D* startPosition;
+		mutable HUD* hud;
+	} child;
+
+	enum NodeEnums
+	{
+		ALL,
+		SCORE_TIMER,
+		MOB_TIMER,
+		PLAYER,
+		START_POSITION,
+		HEADS_UP_DISPLAY
+	};
+
   int score;
 
   void linkReferences();
+
+	template<typename... nodeChoices>
+	void initChildren(nodeChoices... nodeEnums);
+
+	void checkAndLoadNodes(NodeEnums nodeChoice);
 
 protected:
   static void _bind_methods();

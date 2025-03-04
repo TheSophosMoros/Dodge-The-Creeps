@@ -16,48 +16,58 @@
 
 using namespace godot;
 
-void Main::linkReferences()
+template<typename... nodeChoices>
+void Main::initChildren(nodeChoices... nodeEnums)
 {
-  print_line("Getting ScoreTimer");
-  if (scoreTimer == nullptr)
+  (checkAndLoadNodes(nodeEnums), ... );
+}
+
+void Main::checkAndLoadNodes(const NodeEnums nodeChoice)
+{
+  switch (nodeChoice)
   {
-    scoreTimer = get_node<Timer>("ScoreTimer");
-    scoreTimer != nullptr
-      ? print_line("ScoreTimer Found")
-      : print_line("ScoreTimer Not Found");
-  } else print_line("ScoreTimer Already Linked");
-  print_line("Getting MobTimer");
-  if (mobTimer == nullptr)
-  {
-    mobTimer = get_node<Timer>("MobTimer");
-    mobTimer != nullptr
-      ? print_line("MobTimer Found")
-      : print_line("MobTimer Not Found");
-  } else print_line("MobTimer Already Linked");
-  print_line("Getting Player");
-  if (player == nullptr)
-  {
-    player = get_node<Player>("Player");
-    player != nullptr
-      ? print_line("Player Found")
-      : print_line("Player Not Found");
-  } else print_line("Player Already Linked");
-  print_line("Getting StartPosition");
-  if (startPosition == nullptr)
-  {
-    startPosition = get_node<Marker2D>("StartPosition");
-    startPosition != nullptr
-      ? print_line("StartPosition Found")
-      : print_line("StartPosition Not Found");
-  } else print_line("StartPosition Already Linked");
-  print_line("Getting HUD");
-  if (hud == nullptr)
-  {
-    hud = get_node<HUD>("HUD");
-    hud != nullptr
-      ? print_line("HUD Found")
-      : print_line("HUD Not Found");
-  } else print_line("HUD Already linked");
+    case ALL: initChildren(SCORE_TIMER,
+                           MOB_TIMER,
+                           PLAYER,
+                           START_POSITION,
+                           HEADS_UP_DISPLAY);
+      break;
+    case SCORE_TIMER:
+      if (child.scoreTimer == nullptr)
+      {
+        const auto scoreTimerTmp = get_node<Timer>("ScoreTimer");
+        if (scoreTimerTmp != nullptr) child.scoreTimer = scoreTimerTmp;
+      }
+      break;
+    case MOB_TIMER:
+      if (child.mobTimer == nullptr)
+      {
+        const auto mobTimerTmp = get_node<Timer>("MobTimer");
+        if (mobTimerTmp != nullptr) child.mobTimer = mobTimerTmp;
+      }
+      break;
+    case PLAYER:
+      if (child.player == nullptr)
+      {
+        const auto playerTmp = get_node<Player>("Player");
+        if (playerTmp != nullptr) child.player = playerTmp;
+      }
+      break;
+    case START_POSITION:
+      if (child.startPosition == nullptr)
+      {
+        const auto startPositionTmp = get_node<Marker2D>("StartPosition");
+        if (startPositionTmp != nullptr) child.startPosition = startPositionTmp;
+      }
+      break;
+    case HEADS_UP_DISPLAY: if (child.hud == nullptr)
+      {
+        const auto hudTmp = get_node<HUD>("HUD");
+        if (hudTmp != nullptr) child.hud = hudTmp;
+      }
+      break;
+    default: break;
+  }
 }
 
 void Main::_bind_methods()
@@ -73,29 +83,25 @@ void Main::_bind_methods()
   ClassDB::bind_method(D_METHOD("get_mob_scene"), &Main::getMobScene);
 
   ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "mob_scene"), "set_mob_scene", "get_mob_scene");
-
 }
 
-Main::Main()
-{
-  score = 0;
-  rng.seed(std::random_device()());
-}
+Main::Main() :
+  rng(std::random_device()()),
+  child{nullptr, nullptr, nullptr, nullptr, nullptr},
+  score(0) {}
 
-Main::~Main()
-{
-}
+Main::~Main() = default;
 
 void Main::onStartTimerTimeout() const
 {
-  scoreTimer->start();
-  mobTimer->start();
+  child.scoreTimer->start();
+  child.mobTimer->start();
 }
 
 void Main::onScoreTimerTimeout()
 {
   ++score;
-  hud->updateScore(score);
+  child.hud->updateScore(score);
 }
 
 void Main::onMobTimerTimeout()
@@ -120,7 +126,8 @@ void Main::onMobTimerTimeout()
   mob->set_rotation(direction);
 
   //Choose a random velocity for the mob
-  dist.param(std::uniform_real_distribution<float>::param_type(mob->getMinimumSpeed(), mob->getMaximumSpeed())); // NOLINT(*-narrowing-conversions)
+  dist.param(std::uniform_real_distribution<float>::param_type(mob->getMinimumSpeed(), mob->getMaximumSpeed()));
+  // NOLINT(*-narrowing-conversions)
   mob->set_linear_velocity(Vector2(dist(rng), 0).rotated(direction));
 
   //Spawn the mob by adding it to the Main scene
@@ -132,9 +139,9 @@ void Main::gameOver() const
   get_node<AudioStreamPlayer>("Music")->stop();
   get_node<AudioStreamPlayer>("DeathSound")->play();
 
-  scoreTimer->stop();
-  mobTimer->stop();
-  hud->showGameOverMessage();
+  child.scoreTimer->stop();
+  child.mobTimer->stop();
+  child.hud->showGameOverMessage();
 
   get_tree()->call_group("mobs", "queue_free");
 }
@@ -143,16 +150,14 @@ void Main::newGame()
 {
   score = 0;
   get_node<AudioStreamPlayer>("Music")->play();
-  print_line("New Game Started");
-  if (player != nullptr || startPosition != nullptr) linkReferences();
-  print_line("Attempting to move player");
-  player->start(startPosition->get_position());
+  initChildren(PLAYER, START_POSITION, HEADS_UP_DISPLAY);
+  child.player->start(child.startPosition->get_position());
   get_node<Timer>("StartTimer")->start();
-  hud->updateScore(score);
-  hud->showMessage("Get Ready");
+  child.hud->updateScore(score);
+  child.hud->showMessage("Get Ready");
 }
 
 void Main::_ready()
 {
-  linkReferences();
+  initChildren(ALL);
 }
