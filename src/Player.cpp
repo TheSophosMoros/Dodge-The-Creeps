@@ -15,10 +15,7 @@ using namespace godot;
  * @param nodeEnums
  */
 template<typename... nodeChoices>
-void Player::initChildren(nodeChoices... nodeEnums)
-{
-  (checkAndLoadNodes(nodeEnums), ... );
-}
+void Player::initChildren(nodeChoices... nodeEnums) { (checkAndLoadNodes(nodeEnums), ... ); }
 
 /**
  * @breif Method to check if a node pointer is loaded and if not attempt to populate the node pointer
@@ -64,7 +61,9 @@ void Player::_bind_methods()
 	ClassDB::bind_method(D_METHOD("get_speed"), &Player::getSpeed);
 	ClassDB::bind_method(D_METHOD("_body_collision", "p_body"), &Player::bodyCollision);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "speed"), "set_speed", "get_speed");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "speed"),
+	             "set_speed",
+	             "get_speed");
 	ADD_SIGNAL(MethodInfo("hit"));
 }
 

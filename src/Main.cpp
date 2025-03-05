@@ -20,10 +20,7 @@ using namespace godot;
  * @param nodeEnums
  */
 template<typename... nodeChoices>
-void Main::initChildren(nodeChoices... nodeEnums)
-{
-  (checkAndLoadNodes(nodeEnums), ... );
-}
+void Main::initChildren(nodeChoices... nodeEnums) { (checkAndLoadNodes(nodeEnums), ... ); }
 
 /**
  * @breif Method to check if a node pointer is loaded and if not attempt to populate the node pointer
@@ -36,14 +33,14 @@ void Main::checkAndLoadNodes(const NodeEnums nodeChoice)
     case ALL:
     {
       initChildren(START_TIMER,
-                  SCORE_TIMER,
-                  MOB_TIMER,
-                  PLAYER,
-                  START_POSITION,
-                  HEADS_UP_DISPLAY,
-                  MUSIC_AUDIO,
-                  DEATH_AUDIO,
-                  MOB_SPAWN_PATH);
+                   SCORE_TIMER,
+                   MOB_TIMER,
+                   PLAYER,
+                   START_POSITION,
+                   HEADS_UP_DISPLAY,
+                   MUSIC_AUDIO,
+                   DEATH_AUDIO,
+                   MOB_SPAWN_PATH);
       break;
     }
     case START_TIMER:
@@ -154,7 +151,11 @@ void Main::_bind_methods()
  */
 Main::Main() : rng(std::random_device()()),
                score(0),
-               child{nullptr, nullptr, nullptr, nullptr, nullptr}
+               child{nullptr,
+                     nullptr,
+                     nullptr,
+                     nullptr,
+                     nullptr}
 {}
 
 /**
@@ -222,7 +223,11 @@ Ref<PackedScene> Main::getMobScene() {return mobScene;}
  */
 void Main::gameOver()
 {
-  initChildren(MUSIC_AUDIO, DEATH_AUDIO, SCORE_TIMER, MOB_TIMER, HEADS_UP_DISPLAY);
+  initChildren(MUSIC_AUDIO,
+               DEATH_AUDIO,
+               SCORE_TIMER,
+               MOB_TIMER,
+               HEADS_UP_DISPLAY);
   child.musicAudioStreamPlayer->stop();
   child.deathAudioStreamPlayer->play();
   child.scoreTimer->stop();
@@ -239,7 +244,11 @@ void Main::newGame()
 {
   score = 0;
 
-  initChildren(MUSIC_AUDIO, PLAYER, START_TIMER, START_POSITION, HEADS_UP_DISPLAY);
+  initChildren(MUSIC_AUDIO,
+               PLAYER,
+               START_TIMER,
+               START_POSITION,
+               HEADS_UP_DISPLAY);
   child.musicAudioStreamPlayer->play();
   child.player->start(child.startPosition->get_position());
   child.startTimer->start();
@@ -250,7 +259,4 @@ void Main::newGame()
 /**
  * @breif Godot built in method that is called when a node is loaded
  */
-void Main::_ready()
-{
-  initChildren(ALL);
-}
+void Main::_ready() { initChildren(ALL); }

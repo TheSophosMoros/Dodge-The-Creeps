@@ -38,9 +38,10 @@ class HUD final : public CanvasLayer {
   void initChildren(nodeChoices... nodeEnums);
   void checkAndLoadNodes(NodeEnums nodeChoice);
 
-public:
+protected:
   static void _bind_methods();
 
+public:
   HUD();
   ~HUD() override;
 
@@ -53,7 +54,6 @@ public:
   void onGameOverFinishRestart();
 
   void updateScore(int score);
-
 };
 
 }

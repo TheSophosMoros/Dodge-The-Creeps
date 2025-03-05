@@ -7,8 +7,13 @@
 
 #include <random>
 #include <godot_cpp/classes/rigid_body2d.hpp>
+#include <godot_cpp/classes/animated_sprite2d.hpp>
 
 namespace godot {
+
+/**
+ * @brief The Mob Node for the Godot DodgeTheCreeps Game
+ */
 class Mob final : public RigidBody2D{
 	GDCLASS(Mob, RigidBody2D);
 
@@ -19,17 +24,33 @@ class Mob final : public RigidBody2D{
 	std::mt19937 rng;
 	std::uniform_real_distribution<> dist;
 
+  struct Child
+  {
+    mutable AnimatedSprite2D* animatedSprite2D;
+  } child;
+
+  enum NodeEnums
+  {
+    ALL,
+    ANIMATED_SPRITE ///< @link Child::animatedSprite2D @endlink
+  };
+
+  template<typename... nodeChoices>
+  void initChildren(nodeChoices... nodeEnums);
+  void checkAndLoadNodes(NodeEnums nodeChoice);
+
 	void setRandomAnimation();
 
-	public:
+protected:
 	static void _bind_methods();
 
-	void setMinimumSpeed(const int minimum_speed) { minimumSpeed = minimum_speed; }
-	[[nodiscard]] int getMinimumSpeed() const { return minimumSpeed; }
-	void setMaximumSpeed(const int maximum_speed) { maximumSpeed = maximum_speed; }
-	[[nodiscard]] int getMaximumSpeed() const { return maximumSpeed; }
+public:
+	void setMinimumSpeed(int minimum_speed);
+  [[nodiscard]] int getMinimumSpeed() const;
+  void setMaximumSpeed(int maximum_speed);
+  [[nodiscard]] int getMaximumSpeed() const;
 
-	void onVisibilityNotifier2DScreenExited();
+  void onVisibilityNotifier2DScreenExited();
 
 	Mob();
 	~Mob() override;

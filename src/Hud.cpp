@@ -16,10 +16,7 @@ using namespace godot;
  * @param nodeEnums
  */
 template<typename... nodeChoices>
-void HUD::initChildren(nodeChoices... nodeEnums)
-{
-  (checkAndLoadNodes(nodeEnums), ... );
-}
+void HUD::initChildren(nodeChoices... nodeEnums) { (checkAndLoadNodes(nodeEnums), ... ); }
 
 /**
  * @breif Method to check if a node pointer is loaded and if not attempt to populate the node pointer
