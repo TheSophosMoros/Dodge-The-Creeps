@@ -26,8 +26,10 @@ class Main final : public Node {
   Ref<PackedScene> mobScene;
   std::mt19937 rng;
   std::uniform_real_distribution<float> dist;
+  int score;
 
-	struct Child{
+	struct Child
+  {
 	  mutable Timer* startTimer;
 		mutable Timer* scoreTimer;
 		mutable Timer* mobTimer;
@@ -53,26 +55,23 @@ class Main final : public Node {
 	  MOB_SPAWN_PATH ///< @link Child::mobSpawnPath @endlink
 	};
 
-  int score;
-
 	template<typename... nodeChoices>
 	void initChildren(nodeChoices... nodeEnums);
-
 	void checkAndLoadNodes(NodeEnums nodeChoice);
 
 protected:
   static void _bind_methods();
 
 public:
+  void setMobScene(const Ref<PackedScene> &mobScene);
+  [[nodiscard]] Ref<PackedScene> getMobScene();
+
   Main();
   ~Main() override;
 
   void onStartTimerTimeout();
   void onScoreTimerTimeout();
   void onMobTimerTimeout();
-
-  void setMobScene(const Ref<PackedScene> &mobScene);
-  [[nodiscard]] Ref<PackedScene> getMobScene();
 
   void gameOver();
   void newGame();

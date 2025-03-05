@@ -33,79 +33,100 @@ void Main::checkAndLoadNodes(const NodeEnums nodeChoice)
 {
   switch (nodeChoice)
   {
-    case ALL: initChildren(START_TIMER,
-                           SCORE_TIMER,
-                           MOB_TIMER,
-                           PLAYER,
-                           START_POSITION,
-                           HEADS_UP_DISPLAY,
-                           MUSIC_AUDIO,
-                           DEATH_AUDIO,
-                           MOB_SPAWN_PATH);
+    case ALL:
+    {
+      initChildren(START_TIMER,
+                  SCORE_TIMER,
+                  MOB_TIMER,
+                  PLAYER,
+                  START_POSITION,
+                  HEADS_UP_DISPLAY,
+                  MUSIC_AUDIO,
+                  DEATH_AUDIO,
+                  MOB_SPAWN_PATH);
       break;
+    }
     case START_TIMER:
+    {
       if (child.startTimer == nullptr)
       {
         const auto startTimerTmp = get_node<Timer>("StartTimer");
         if (startTimerTmp != nullptr) child.startTimer = startTimerTmp;
       }
       break;
+    }
     case SCORE_TIMER:
+    {
       if (child.scoreTimer == nullptr)
       {
         const auto scoreTimerTmp = get_node<Timer>("ScoreTimer");
         if (scoreTimerTmp != nullptr) child.scoreTimer = scoreTimerTmp;
       }
       break;
+    }
     case MOB_TIMER:
+    {
       if (child.mobTimer == nullptr)
       {
         const auto mobTimerTmp = get_node<Timer>("MobTimer");
         if (mobTimerTmp != nullptr) child.mobTimer = mobTimerTmp;
       }
       break;
+    }
     case PLAYER:
+    {
       if (child.player == nullptr)
       {
         const auto playerTmp = get_node<Player>("Player");
         if (playerTmp != nullptr) child.player = playerTmp;
       }
       break;
+    }
     case START_POSITION:
+    {
       if (child.startPosition == nullptr)
       {
         const auto startPositionTmp = get_node<Marker2D>("StartPosition");
         if (startPositionTmp != nullptr) child.startPosition = startPositionTmp;
       }
       break;
+    }
     case HEADS_UP_DISPLAY:
+    {
       if (child.hud == nullptr)
       {
         const auto hudTmp = get_node<HUD>("HUD");
         if (hudTmp != nullptr) child.hud = hudTmp;
       }
       break;
+    }
     case MUSIC_AUDIO:
+    {
       if (child.musicAudioStreamPlayer == nullptr)
       {
         const auto musicAudioTmp = get_node<AudioStreamPlayer>("Music");
         if (musicAudioTmp != nullptr) child.musicAudioStreamPlayer = musicAudioTmp;
       }
       break;
+    }
     case DEATH_AUDIO:
+    {
       if (child.deathAudioStreamPlayer == nullptr)
       {
         const auto deathAudioTmp = get_node<AudioStreamPlayer>("DeathSound");
         if (deathAudioTmp != nullptr) child.deathAudioStreamPlayer = deathAudioTmp;
       }
       break;
+    }
     case MOB_SPAWN_PATH:
+    {
       if (child.mobSpawnPath == nullptr)
       {
         const auto mobSpawnPathTmp = get_node<PathFollow2D>("MobPath/MobSpawnLocation");
         if (mobSpawnPathTmp != nullptr) child.mobSpawnPath = mobSpawnPathTmp;
       }
       break;
+    }
     default: break;
   }
 }
@@ -132,8 +153,8 @@ void Main::_bind_methods()
  * @breif Main constructor
  */
 Main::Main() : rng(std::random_device()()),
-               child{nullptr, nullptr, nullptr, nullptr, nullptr},
-               score(0)
+               score(0),
+               child{nullptr, nullptr, nullptr, nullptr, nullptr}
 {}
 
 /**
