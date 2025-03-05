@@ -150,7 +150,7 @@ void Main::_bind_methods()
 }
 
 /**
- * @breif Main constructor
+ * @breif Main Constructor
  */
 Main::Main() : rng(std::random_device()()),
                score(0),
@@ -248,7 +248,7 @@ void Main::newGame()
 }
 
 /**
- * Built in method that is called when a node is loaded
+ * @breif Godot built in method that is called when a node is loaded
  */
 void Main::_ready()
 {

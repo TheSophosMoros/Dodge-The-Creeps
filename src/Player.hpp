@@ -11,7 +11,7 @@
 namespace godot {
 
 /**
- * @brief
+ * @brief The Player Node for the Godot DodgeTheCreeps Game
  */
 class Player final : public Area2D{
 	GDCLASS(Player, Area2D);
@@ -28,8 +28,8 @@ class Player final : public Area2D{
   enum NodeEnums
   {
     ALL,
-    COLLISION_SHAPE,
-    ANIMATED_SPRITE
+    ANIMATED_SPRITE, ///< @link Child::animatedSprite2D @endlink
+    COLLISION_SHAPE  ///< @link Child::collisionShape2D @endlink
   };
 
   template<typename... nodeChoices>

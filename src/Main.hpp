@@ -44,15 +44,15 @@ class Main final : public Node {
 	enum NodeEnums
 	{
 		ALL,
-	  START_TIMER, ///< @link Child::startTimer @endlink
-		SCORE_TIMER, ///< @link Child::scoreTimer @endlink
-		MOB_TIMER, ///< @link Child::mobTimer @endlink
-		PLAYER, ///< @link Child::player @endlink
-		START_POSITION, ///< @link Child::startPosition @endlink
+	  START_TIMER,      ///< @link Child::startTimer @endlink
+		SCORE_TIMER,      ///< @link Child::scoreTimer @endlink
+		MOB_TIMER,        ///< @link Child::mobTimer @endlink
+		PLAYER,           ///< @link Child::player @endlink
+		START_POSITION,   ///< @link Child::startPosition @endlink
 		HEADS_UP_DISPLAY, ///< @link Child::hud @endlink
-	  MUSIC_AUDIO, ///< @link Child::musicAudioStreamPlayer @endlink
-	  DEATH_AUDIO, ///< @link Child::deathAudioStreamPlayer @endlink
-	  MOB_SPAWN_PATH ///< @link Child::mobSpawnPath @endlink
+	  MUSIC_AUDIO,      ///< @link Child::musicAudioStreamPlayer @endlink
+	  DEATH_AUDIO,      ///< @link Child::deathAudioStreamPlayer @endlink
+	  MOB_SPAWN_PATH    ///< @link Child::mobSpawnPath @endlink
 	};
 
 	template<typename... nodeChoices>

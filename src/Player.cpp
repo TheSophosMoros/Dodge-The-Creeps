@@ -55,6 +55,9 @@ void Player::checkAndLoadNodes(const NodeEnums nodeChoice)
   }
 }
 
+/**
+ * @breif Godot built in method to link cpp methods to godot engine. Any further methods that will attempt to link to your methods should use the p_name stated in your binds
+ */
 void Player::_bind_methods()
 {
 	ClassDB::bind_method(D_METHOD("set_speed", "p_speed"), &Player::setSpeed);
@@ -68,12 +71,22 @@ void Player::_bind_methods()
 void Player::setSpeed(const int new_speed) { speed = new_speed; }
 int Player::getSpeed() const { return speed; }
 
+/**
+ * @brief Player Constructor
+ */
 Player::Player() : speed(400),
                    child{nullptr, nullptr}
 {}
 
+/**
+ * @brief Player Deconstructor
+ */
 Player::~Player() = default;
 
+/**
+ * @brief Godot built in method that is called every frame and process the players action
+ * @param delta represents the time elapsed since the last frame was processed, measured in seconds
+ */
 void Player::_process(const float delta)
 {
 	if (Engine::get_singleton()->is_editor_hint()) return;
@@ -109,11 +122,18 @@ void Player::_process(const float delta)
 	}
 }
 
+/**
+ * @brief Godot built in method that is called when a node is loaded
+ */
 void Player::_ready() {
 	screenSize = get_viewport_rect().get_size();
 	hide();
 }
 
+/**
+ * @brief The Method determining the result of another node colliding with the player
+ * @param body the @link Node @endlink of what collided with the player
+ */
 void Player::bodyCollision(Node *body) {
 	hide();
 	emit_signal("hit");
@@ -121,6 +141,10 @@ void Player::bodyCollision(Node *body) {
 	child.collisionShape2D->set_deferred("disabled", true);
 }
 
+/**
+ * @brief The method to be called at the beginning of the game
+ * @param position the location where the player will start
+ */
 void Player::start(const Vector2 position)
 {
 	set_position(position);
