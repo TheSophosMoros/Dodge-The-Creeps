@@ -112,7 +112,6 @@ void Player::_process(const float delta)
 	if (velocity.x != 0.f)
 	{
 		child.animatedSprite2D->set_animation("walk");
-		child.animatedSprite2D->set_flip_v(false);
 		child.animatedSprite2D->set_flip_h(velocity.x < 0.f);
 	}
 	else if (velocity.y != 0.f)
