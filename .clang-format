@@ -1,28 +1,23 @@
-# Generated from CLion C/C++ Code Style settings
 ---
 Language: Cpp
 BasedOnStyle: LLVM
-AlignConsecutiveAssignments: true
+AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: false
 AlignOperands: true
-AlignTrailingComments: true
-AllowShortBlocksOnASingleLine: true
+AlignTrailingComments: false
 AllowShortCaseLabelsOnASingleLine: true
 AllowShortIfStatementsOnASingleLine: true
 AllowShortLoopsOnASingleLine: true
-AlwaysBreakAfterDefinitionReturnType: false
 AlwaysBreakTemplateDeclarations: Yes
-BinPackArguments: false
-BinPackParameters: false
 BraceWrapping: 
   AfterCaseLabel: true
-  AfterClass: true
+  AfterClass: false
   AfterControlStatement: true
-  AfterEnum: true
+  AfterEnum: false
   AfterFunction: true
   AfterNamespace: true
-  AfterStruct: true
-  AfterUnion: true
+  AfterStruct: false
+  AfterUnion: false
   AfterExternBlock: true
   BeforeCatch: true
   BeforeElse: true
@@ -36,10 +31,7 @@ BreakBeforeBraces: Custom
 BreakConstructorInitializers: AfterColon
 BreakConstructorInitializersBeforeComma: false
 ColumnLimit: 120
-CompactNamespaces: true
-ConstructorInitializerAllOnOneLineOrOnePerLine: true
-ContinuationIndentWidth: 0
-Cpp11BracedListStyle: false
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
 IncludeCategories: 
   - Regex: '^<.*'
     Priority: 1
@@ -49,11 +41,10 @@ IncludeCategories:
     Priority: 3
 IncludeIsMainRegex: '([-_](test|unittest))?$'
 IndentCaseLabels: true
-IndentGotoLabels: false
 InsertNewlineAtEOF: true
 MacroBlockBegin: ''
 MacroBlockEnd: ''
-MaxEmptyLinesToKeep: 3
+MaxEmptyLinesToKeep: 2
 NamespaceIndentation: All
 SpaceAfterCStyleCast: true
 SpaceAfterTemplateKeyword: false
@@ -62,5 +53,6 @@ SpaceInEmptyParentheses: false
 SpacesInAngles: false
 SpacesInConditionalStatement: false
 SpacesInCStyleCastParentheses: false
+SpacesInParentheses: false
 TabWidth: 2
 ...
