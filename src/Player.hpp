@@ -14,7 +14,7 @@ namespace godot {
  * @brief The Player Node for the Godot DodgeTheCreeps Game
  */
 class Player final : public Area2D{
-	GDCLASS(Player, Area2D);
+	GDCLASS( Player, Area2D );
 
 	int speed;
 	Vector2 screenSize;
@@ -33,24 +33,25 @@ class Player final : public Area2D{
   };
 
   template<typename... nodeChoices>
-  void initChildren(nodeChoices... nodeEnums);
-  void checkAndLoadNodes(NodeEnums nodeChoice);
+  void initChildren( nodeChoices... nodeEnums );
+  void checkAndLoadNodes( NodeEnums nodeChoice );
 
 protected:
 	static void _bind_methods();
 
 public:
-	void setSpeed(int new_speed);
+	void setSpeed( int new_speed );
   [[nodiscard]] int getSpeed() const;
 
   Player();
 	~Player() override;
 
-	void _process(float delta);
+	void _process( float delta );
 	void _ready() override;
 
-	void bodyCollision(Node *body);
-	void start(Vector2 position);
+	void bodyCollision( Node *body );
+	void start( Vector2 position );
 };
+
 }
 #endif //PLAYER_HPP

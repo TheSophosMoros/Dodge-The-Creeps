@@ -22,7 +22,7 @@ namespace godot {
  * @brief The Main Node for the DodgeTheCreeps Game
  */
 class Main final : public Node {
-  GDCLASS(Main, Node);
+  GDCLASS( Main, Node );
   Ref<PackedScene> mobScene;
   std::mt19937 rng;
   std::uniform_real_distribution<float> dist;
@@ -56,14 +56,14 @@ class Main final : public Node {
 	};
 
 	template<typename... nodeChoices>
-	void initChildren(nodeChoices... nodeEnums);
-	void checkAndLoadNodes(NodeEnums nodeChoice);
+	void initChildren( nodeChoices... nodeEnums );
+	void checkAndLoadNodes( NodeEnums nodeChoice );
 
 protected:
   static void _bind_methods();
 
 public:
-  void setMobScene(const Ref<PackedScene> &mobScene);
+  void setMobScene( const Ref<PackedScene> &mobScene );
   [[nodiscard]] Ref<PackedScene> getMobScene();
 
   Main();

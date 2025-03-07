@@ -15,7 +15,7 @@ namespace godot {
  * @brief The Mob Node for the Godot DodgeTheCreeps Game
  */
 class Mob final : public RigidBody2D{
-	GDCLASS(Mob, RigidBody2D);
+	GDCLASS( Mob, RigidBody2D );
 
 	static constexpr int DEFAULT_MINIMUM_SPEED = 150;
 	static constexpr int DEFAULT_MAXIMUM_SPEED = 200;
@@ -36,8 +36,8 @@ class Mob final : public RigidBody2D{
   };
 
   template<typename... nodeChoices>
-  void initChildren(nodeChoices... nodeEnums);
-  void checkAndLoadNodes(NodeEnums nodeChoice);
+  void initChildren( nodeChoices... nodeEnums );
+  void checkAndLoadNodes( NodeEnums nodeChoice );
 
 	void setRandomAnimation();
 
@@ -45,9 +45,9 @@ protected:
 	static void _bind_methods();
 
 public:
-	void setMinimumSpeed(int minimum_speed);
+	void setMinimumSpeed( int minimum_speed );
   [[nodiscard]] int getMinimumSpeed() const;
-  void setMaximumSpeed(int maximum_speed);
+  void setMaximumSpeed( int maximum_speed );
   [[nodiscard]] int getMaximumSpeed() const;
 
   void onVisibilityNotifier2DScreenExited();

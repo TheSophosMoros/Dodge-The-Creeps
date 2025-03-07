@@ -15,7 +15,7 @@ namespace godot {
  * @brief The HUD Node for the Godot DodgeTheCreeps Game
  */
 class HUD final : public CanvasLayer {
-  GDCLASS(HUD, CanvasLayer)
+  GDCLASS( HUD, CanvasLayer )
 
   struct Child
   {
@@ -35,8 +35,8 @@ class HUD final : public CanvasLayer {
   };
 
   template<typename... nodeChoices>
-  void initChildren(nodeChoices... nodeEnums);
-  void checkAndLoadNodes(NodeEnums nodeChoice);
+  void initChildren( nodeChoices... nodeEnums );
+  void checkAndLoadNodes( NodeEnums nodeChoice );
 
 protected:
   static void _bind_methods();
@@ -48,12 +48,12 @@ public:
   void onStartButtonPressed();
   void onMessageTimerTimeout();
 
-  void showMessage(const String &message);
+  void showMessage( const String &message );
   void showGameOverMessage();
   void onGameOverTimerTimeout();
   void onGameOverFinishRestart();
 
-  void updateScore(int score);
+  void updateScore( int score );
 };
 
 }

@@ -147,7 +147,7 @@ void Main::_bind_methods()
   ClassDB::bind_method( D_METHOD( "set_mob_scene", "p_mob_scene" ), &Main::setMobScene );
   ClassDB::bind_method( D_METHOD( "get_mob_scene" ), &Main::getMobScene );
 
-  ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "mob_scene"), "set_mob_scene", "get_mob_scene");
+  ADD_PROPERTY( PropertyInfo( Variant::OBJECT, "mob_scene"), "set_mob_scene", "get_mob_scene" );
 }
 
 /**
